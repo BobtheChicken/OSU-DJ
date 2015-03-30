@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href='http://fonts.googleapis.com/css?family=Duru+Sans' rel='stylesheet' type='text/css'>
+		<link href='css/dancer.css' rel='stylesheet' type='text/css'>
+		<link href='css/animate.css' rel='stylesheet' type='text/css'>
+		<link href='jquery-ui.css' rel='stylesheet' type='text/css'>
+
+		<style>
+			#enchant-stage {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            position:absolute;
+            background-image: url("images/3.png");
+            z-index:-1;
+            height:100vh;
+		    }
+
+		    #background{
+		    	background-size:   cover;                      /* <------ */
+	    	    background-repeat: no-repeat;
+	    	    background-position: center center;
+		    }
+		</style>
+
+	</head>
+	<body >
+
+	<!-- <div id="selector">hi</div> -->
+
+	<div id="gameholder" style="height: 100vh; background-color: white"><center>
+	        <div id="background" style="width: 100vw; height:100vh; background-size:   cover; background-repeat: no-repeat; background-position: center top;"><br><br><h2><input id="songsearch"><br><a href="#" onclick="searchstuff();">search</a></h2></div>
+	    </div>
+	    <div id="preload" style="display:none; visibility: hidden;">
+	    <!-- <img src= -->
+
+	    </div>
+
+
+	    <audio id="audio" type="audio/mp3">
+		</audio>
+
+
+
+		<!-- Demo stuff -->
+		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+	    <script type="text/javascript" src="js/howler.js"></script>
+	    <script src="//cdn.jsdelivr.net/velocity/1.2.2/velocity.min.js"></script>
+
+	    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+	    <script type="text/javascript" src="zip.js"></script>
+	    <script type="text/javascript" src="zip-fs.js"></script>
+	    <script type="text/javascript" src="mime-types.js"></script>
+	    <script type="text/javascript" src="zip-ext.js"></script>
+		<script type="text/javascript" src="z-worker.js"></script>
+		<script type="text/javascript" src="deflate.js"></script>
+		<script type="text/javascript" src="inflate.js"></script>
+	    <!-- <script type="text/javascript" src="enchant.js"></script> -->
+		<script src="js/player.js"></script>
+		<script src="jquery-ui.js"></script>
+
+
+
+
+	</body>
+</html>
