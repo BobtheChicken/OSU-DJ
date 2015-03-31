@@ -87,6 +87,7 @@ function onTimerTick() {
           firsttime = false;
           audio = document.getElementById("audio");
           audio.play();
+          $("#background").css('background-image','url('+imageurls[getRandomInt(0,imageurls.length-1)]+')');
           // sound.play();
         }
         var now = new Date().getTime();
@@ -109,6 +110,10 @@ function onTimerTick() {
             $("#background").css('background-image','url(images/'+getRandomInt(1,24)+'.png)');
           }
           $("#background").empty();
+          $( "#background" ).toggle( "fade",{duration:0, complete: function(){
+            $( "#background" ).toggle( "fade",{duration:50});
+          }});
+
 
           // for(var i = 0; i < 1; i++)
           // {
@@ -190,10 +195,14 @@ function searchstuff()
 
   var oReq2 = new XMLHttpRequest();
   oReq2.open("GET", "https://osu.hexide.com/search/maps.title.like."+searchterm, true);
+
+  $("#background").val("alright hold up searching for that song");
+
   oReq2.onload = function(oEvent) {
     var blob = oReq2.response;
     console.log(blob);
     var thejson = JSON.parse(blob);
+    $("#background").val("songs: (protip: click one)");
     for(var i = 0; i < thejson.length; i++)
     {
       $("#background").append("<br><a href='#' onClick='selectsong("+thejson[i].ranked_id+")'>" + thejson[i].name + "</a>");
@@ -209,7 +218,7 @@ function searchstuff()
 
 function selectsong(rankedid)
 {
-  $("#background").html("loading m8");
+  $("#background").html("loading that song m8, just w8");
   var oReq = new XMLHttpRequest();
   oReq.open("GET", "https://osu.hexide.com/beatmaps/"+rankedid+"/download", true);
   oReq.responseType = "blob";
@@ -220,6 +229,8 @@ function selectsong(rankedid)
     zip.createReader(new zip.BlobReader(blob), function(reader) {
       console.log(">>>");
 
+      $("#background").val("choose a beatmap (easy difficulty beatmaps usually work the best)");
+
       // get all entries from the zip
       reader.getEntries(function(entries) {
         theentries = entries;
@@ -229,6 +240,7 @@ function selectsong(rankedid)
 
             // console.log("my boots");
           }
+
           readEntry(0);
         });
 
@@ -300,6 +312,7 @@ function readEntry(index)
 
 function loadosu(index)
 {
+  $("#background").val("images are loading ok its almost done");
   theentries[index].getData(new zip.TextWriter(), function(text) {
         // text contains the entry data as a String
         console.log("found the " + theentries[index].filename);
