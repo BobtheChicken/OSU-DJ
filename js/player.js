@@ -31,6 +31,7 @@ var imageurls = [];
 var searchcount = 0;
 var lasturl = "";
 
+var loadedsource = false;
 
 // $("#background").css('background-image','url('+imageurls[getRandomInt(0,7)]+')');
 
@@ -38,40 +39,16 @@ var lasturl = "";
 var start = new Date().getTime();
 
 var sound = new Howl({
-      urls: ['beatmaps/test/wonder.mp3']
+      // urls: ['beatmaps/test/wonder.mp3']
     })
 
-$(document).ready(function() {
 
-  $.get('beatmaps/test/wonder.osu', function(data) {
-        // alert(data);
-          // var n = data.indexOf("[HitObjects]");
-          // console.log(n);
-          // var res = data.substring(n, data.length-1);
-          // // console.log(res);
-          // var stringarray = res.split("\n");
-          // stringarray.splice(0, 1);
-          // // console.log(stringarray);
-
-          // // var hitobjects = [];
-          // for(var i = 0; i < stringarray.length; i++)
-          // {
-          //     var hit = {};
-          //     var rawstrings = stringarray[i].split(",");
-          //     hit.x = parseInt(rawstrings[0]);
-          //     hit.y = parseInt(rawstrings[1]);
-          //     hit.time = parseInt(rawstrings[2]);
-
-          //     hitobjects.push(hit);
-          // }
-          // start = new Date().getTime();
-          // ready = true;
-
-          // sound.play();
-
-  });
-
+$('#inputsource').on('input', function() {
+    // do something
+    source = $('#inputsource').val();
 });
+
+
 
 
 setInterval(onTimerTick, 33); // 33 milliseconds = ~ 30 frames per sec
@@ -110,9 +87,9 @@ function onTimerTick() {
             $("#background").css('background-image','url(images/'+getRandomInt(1,24)+'.png)');
           }
           $("#background").empty();
-          $( "#background" ).toggle( "fade",{duration:0, complete: function(){
-            $( "#background" ).toggle( "fade",{duration:50});
-          }});
+          // $( "#background" ).toggle( "fade",{duration:0, complete: function(){
+          //   $( "#background" ).toggle( "fade",{duration:100});
+          // }});
 
 
           // for(var i = 0; i < 1; i++)
@@ -196,13 +173,13 @@ function searchstuff()
   var oReq2 = new XMLHttpRequest();
   oReq2.open("GET", "https://osu.hexide.com/search/maps.title.like."+searchterm, true);
 
-  $("#background").val("alright hold up searching for that song");
+  $("#background").html("alright hold up searching for that song");
 
   oReq2.onload = function(oEvent) {
     var blob = oReq2.response;
     console.log(blob);
     var thejson = JSON.parse(blob);
-    $("#background").val("songs: (protip: click one)");
+    $("#background").html("songs: (easy difficulty usually looks the best)");
     for(var i = 0; i < thejson.length; i++)
     {
       $("#background").append("<br><a href='#' onClick='selectsong("+thejson[i].ranked_id+")'>" + thejson[i].name + "</a>");
@@ -242,6 +219,7 @@ function selectsong(rankedid)
           }
 
           readEntry(0);
+
         });
 
 
@@ -264,6 +242,12 @@ function readEntry(index)
     if(index < theentries.length -1 )
     {
       readEntry(index+1);
+    }
+
+    if(loadedsource == false)
+    {
+      loadforimages(index);
+      loadedsource = true;
     }
   }
   else if(theentries[index].filename.indexOf("mp3") > -1 || theentries[index].filename.indexOf(".ogg") > -1)
@@ -308,11 +292,43 @@ function readEntry(index)
 }
 
 
+function loadforimages(index)
+{
+  theentries[index].getData(new zip.TextWriter(), function(text) {
+        // text contains the entry data as a String
+        console.log("found the " + theentries[index].filename);
+
+
+        var data = text;
+
+          source = "osu";
+          var data2 = data.split("\n");
+          for(var i = 0; i < data2.length; i++)
+          {
+            console.log(data2[i]);
+            if(data2[i].indexOf("Source") > -1)
+            {
+              source = data2[i].substring(7,data2[i].length);
+              console.log("hi there");
+              // c
+            }
+          }
+
+
+          $("#inputsource").val(source);
+
+
+
+      }, function(current, total) {
+        // onprogress callback
+      });
+}
+
 //https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=fuzzy%20monkey
 
 function loadosu(index)
 {
-  $("#background").val("images are loading ok its almost done");
+  $("#background").val("loading images");
   theentries[index].getData(new zip.TextWriter(), function(text) {
         // text contains the entry data as a String
         console.log("found the " + theentries[index].filename);
@@ -336,24 +352,6 @@ function loadosu(index)
 
               hitobjects.push(hit);
           }
-
-          source = "osu";
-          var data2 = data.split("\n");
-          for(var i = 0; i < data2.length; i++)
-          {
-            console.log(data2[i]);
-            if(data2[i].indexOf("Source") > -1)
-            {
-              source = data2[i].substring(7,data2[i].length);
-              console.log("hi there");
-              // c
-            }
-          }
-
-          console.log(source);
-
-
-          console.log(source);
 
           // $.get( "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+source, function( imageres ) {
           //   var parsed = JSON.parse(imageres);
@@ -387,6 +385,12 @@ function loadosu(index)
           searcher.gotoPage(0);
           console.log("cursor:" + searcher.cursor);
           searcher.execute(source + " wallpaper");
+
+          if(source.length < 2)
+          {
+          	imagetype = "420";
+          	$("#background").html("osu doesn't have a source for that song, reverting to 420.moe pictures");
+          }
 
 
       }, function(current, total) {
